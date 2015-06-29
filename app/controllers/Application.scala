@@ -26,8 +26,10 @@ object Application extends Controller with Security {
     val jsRoutesClass = classOf[routes.javascript]
     val controllers = jsRoutesClass.getFields.map(_.get(null))
     controllers.flatMap { controller =>
-      controller.getClass.getDeclaredMethods.map { action =>
-        action.invoke(controller).asInstanceOf[play.core.Router.JavascriptReverseRoute]
+      controller.getClass.getDeclaredMethods
+      .filter(_.getName != "_defaultPrefix")
+      .map { action =>
+        action.invoke(controller).asInstanceOf[play.api.routing.JavaScriptReverseRoute]
       }
     }
   }
